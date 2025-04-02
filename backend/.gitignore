@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# pasta temporario para upload de arquivos
+/files
+
 # Logs
 logs
 *.log
