@@ -15,18 +15,19 @@ enum Status {
 
 model SurveyReport {
   id             Int       @id @default(autoincrement())
-  totalRecords   Int?
+  totalRecords   Int?      @map("total_records")
   status         Status    @default(IN_PROCESS)
   filepath       String
-  filepathResult String?
-  createdAt      DateTime  @default(now())
-  uptadedAt      DateTime?
+  filepathResult String?   @map("filepath_result")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  uptadedAt      DateTime? @map("uptaded_at")
 }
 
 model Survey {
-  code      String   @id
-  noteOne   Int
-  notaTwo   Int
+  code      String    @id
+  noteOne   Int       @map("note_one")
+  noteTwo   Int       @map("note_two")
   result    Decimal
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now()) @map("created_at")
+  uptadedAt DateTime? @map("uptaded_at")
 }
