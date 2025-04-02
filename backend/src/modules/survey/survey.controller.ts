@@ -7,8 +7,8 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
-  Patch,
   Post,
+  Put,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -26,8 +26,8 @@ export class SurveyController {
   constructor(private readonly surveyService: SurveyService) {}
 
   @Post()
-  create(@Body() createSurveyDto: CreateSurveyDto) {
-    return this.surveyService.create(createSurveyDto);
+  async create(@Body() createSurveyDto: CreateSurveyDto) {
+    return await this.surveyService.create(createSurveyDto);
   }
 
   @Post('/upload')
@@ -55,8 +55,7 @@ export class SurveyController {
     )
     file: Express.Multer.File,
   ) {
-    console.log(file);
-    return file.originalname;
+    return this.surveyService.uploadSurveyReport(file);
   }
 
   @Get()
@@ -64,18 +63,16 @@ export class SurveyController {
     return this.surveyService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.surveyService.findOne(+id);
+  @Put(':code')
+  update(
+    @Param('code') code: string,
+    @Body() updateSurveyDto: UpdateSurveyDto,
+  ) {
+    return this.surveyService.update(code, updateSurveyDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSurveyDto: UpdateSurveyDto) {
-    return this.surveyService.update(+id, updateSurveyDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.surveyService.remove(+id);
+  @Delete(':code')
+  remove(@Param('code') code: string) {
+    return this.surveyService.remove(code);
   }
 }
