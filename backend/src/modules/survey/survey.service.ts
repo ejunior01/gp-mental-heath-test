@@ -5,7 +5,9 @@ import {
 } from '@nestjs/common';
 
 import { CreateSurveyDto } from './dto/create-survey.dto';
+import { PaginationResponseDto } from './dto/PaginationResponseDto';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
+import { Survey } from '@prisma/client';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 
 @Injectable()
@@ -51,8 +53,31 @@ export class SurveyService {
     return { message: 'Arquivo carregado com sucesso', filePath: file.path };
   }
 
-  async findAll() {
-    return await this.prismaService.survey.findMany();
+  async findAll(
+    page: number = 1,
+    size: number = 8,
+  ): Promise<PaginationResponseDto<Survey>> {
+    const total = await this.prismaService.survey.count();
+
+    const data = await this.prismaService.survey.findMany({
+      skip: page - 1,
+      take: size,
+    });
+
+    const pages = Math.ceil(total / size);
+
+    const prevPage = page < 1 ? 1 : page - 1;
+    const nextPage = page > pages ? pages : page + 1;
+
+    return {
+      data,
+      page,
+      pages,
+      total,
+      size,
+      prevPage,
+      nextPage,
+    };
   }
 
   async update(code: string, updateSurveyDto: UpdateSurveyDto) {

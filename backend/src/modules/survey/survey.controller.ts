@@ -9,6 +9,7 @@ import {
   ParseFilePipe,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -59,8 +60,8 @@ export class SurveyController {
   }
 
   @Get()
-  findAll() {
-    return this.surveyService.findAll();
+  findAll(@Query('page') page: number = 1, @Query('size') size: number = 8) {
+    return this.surveyService.findAll(Number(page), Number(size));
   }
 
   @Put(':code')
