@@ -1,8 +1,28 @@
 services:
+  survey_frontend:
+    container_name: survey_frontend
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - survey_backend
+    environment:
+      - VITE_API_URL=http://localhost:3001
+  survey_backend:
+    container_name: survey_backend
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgresql://pg:123456@localhost:5432/survey_manager?schema=public
+    volumes:
+      - shared-storage:/usr/src/app
+    ports:
+      - "3001:3001"
+    depends_on:
+      - survey_database
   survey_database:
     image: postgres:17.4-bookworm
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: pg
       POSTGRES_DB: survey_manager
@@ -11,4 +31,5 @@ services:
       - "5432:5432"
 
 volumes:
-  pgdata:
+  pg-data:
+  shared-storage:
