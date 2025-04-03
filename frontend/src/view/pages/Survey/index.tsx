@@ -9,6 +9,10 @@ import { DataTableContainer } from "@/view/components/data-table/data-table-cont
 import { surveysColumnsSchema } from "./survey-columns-schema";
 import { useSurveys } from "@/app/hooks/use-surveys";
 import { useTable } from "@/app/hooks/use-table";
+import { Button } from "@/view/components/ui/button";
+import { Plus } from "lucide-react";
+import SurveyDataTableFilter from "./survey-data-table-filter";
+import { RegisterSurveyDialog } from "./components/register-survey-dialog";
 
 export function SurveyPage() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -43,6 +47,10 @@ export function SurveyPage() {
   return (
     <div>
       <h1 className="font-bold text-2xl">Resultado das pesquisas</h1>
+      <div className="flex gap-3 justify-end">
+        <SurveyDataTableFilter table={table} />
+        <RegisterSurveyDialog/>
+      </div>
       <DataTableContainer
         isDataLoading={isAllSurveysDataLoading}
         table={table}
