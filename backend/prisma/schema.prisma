@@ -29,5 +29,5 @@ model Survey {
   noteTwo   Int       @map("note_two")
   result    Decimal
   createdAt DateTime  @default(now()) @map("created_at")
-  uptadedAt DateTime? @map("uptaded_at")
+  uptadedAt DateTime? @default(now()) @map("uptaded_at")
 }
