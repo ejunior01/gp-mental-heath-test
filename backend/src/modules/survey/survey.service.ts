@@ -4,15 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { CreateSurveyDto } from './dto/create-survey.dto';
-import { PaginationResponseDto } from './dto/PaginationResponseDto';
-import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { Survey } from '@prisma/client';
+import { PrismaService } from 'src/shared/prisma/prisma.service';
+import { PaginationResponseDto } from './dto/PaginationResponseDto';
+import { CreateSurveyDto } from './dto/create-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 
 @Injectable()
 export class SurveyService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async create(createSurveyDto: CreateSurveyDto) {
     const existSurvey = await this.prismaService.survey.findUnique({
@@ -114,6 +114,7 @@ export class SurveyService {
         noteOne: updateSurveyDto.noteOne,
         noteTwo: updateSurveyDto.noteTwo,
         result: resultNote,
+        uptadedAt: new Date()
       },
       select: {
         code: true,
