@@ -1,6 +1,6 @@
-import { IGetAllSurveys } from "../services/surveyService/get-all";
-import { surveyService } from "../services/surveyService";
 import { useQuery } from "@tanstack/react-query";
+import { surveyService } from "../services/surveysService";
+import { IGetAllSurveys } from "../services/surveysService/get-all";
 
 export function useSurveys({ pagination, columnFilters }: IGetAllSurveys) {
   const { data, isPending, isError, error } = useQuery({

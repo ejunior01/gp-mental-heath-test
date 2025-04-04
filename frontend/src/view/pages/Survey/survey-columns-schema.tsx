@@ -1,5 +1,6 @@
-import { ColumnDef } from "@tanstack/react-table";
 import { Survey } from "@/app/entities/survey";
+import { SurveyActionsDropdown } from "@/view/pages/Survey/Actions/survey-actions-dropdown";
+import { ColumnDef } from "@tanstack/react-table";
 
 export const surveysColumnsSchema: ColumnDef<Survey>[] = [
   {
@@ -29,8 +30,8 @@ export const surveysColumnsSchema: ColumnDef<Survey>[] = [
   },
   {
     id: "actions",
-    cell: ({}) => {
-      return <span>Actions</span>;
+    cell: ({ row }) => {
+      return <SurveyActionsDropdown code={row.original.code} />
     },
   },
 ];

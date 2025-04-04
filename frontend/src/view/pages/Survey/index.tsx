@@ -5,14 +5,12 @@ import {
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 
-import { DataTableContainer } from "@/view/components/data-table/data-table-container";
-import { surveysColumnsSchema } from "./survey-columns-schema";
 import { useSurveys } from "@/app/hooks/use-surveys";
 import { useTable } from "@/app/hooks/use-table";
-import { Button } from "@/view/components/ui/button";
-import { Plus } from "lucide-react";
+import { DataTableContainer } from "@/view/components/data-table/data-table-container";
+import { RegisterSurveyDialog } from "./Actions/RegisterSurvey/register-survey-dialog";
+import { surveysColumnsSchema } from "./survey-columns-schema";
 import SurveyDataTableFilter from "./survey-data-table-filter";
-import { RegisterSurveyDialog } from "./components/register-survey-dialog";
 
 export function SurveyPage() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -49,7 +47,7 @@ export function SurveyPage() {
       <h1 className="font-bold text-2xl">Resultado das pesquisas</h1>
       <div className="flex gap-3 justify-end">
         <SurveyDataTableFilter table={table} />
-        <RegisterSurveyDialog/>
+        <RegisterSurveyDialog />
       </div>
       <DataTableContainer
         isDataLoading={isAllSurveysDataLoading}
