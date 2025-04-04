@@ -1,29 +1,41 @@
-import { useSurvey } from "@/app/hooks/use-survey";
-import { Spinner } from "@/view/components/Spinner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/view/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/view/components/ui/form";
+
 import { Button } from "@/view/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/view/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/view/components/ui/form";
 import { Input } from "@/view/components/ui/input";
+import { Spinner } from "@/view/components/Spinner";
+import { useSurvey } from "@/app/hooks/use-survey";
 import { useUpdateSurveyController } from "@/view/pages/Survey/Actions/UpdateSurvey/useUpdateSurveyController";
 
-
 export function UpdateSurveyDialog({ code }: { code: string }) {
-
   const { survey } = useSurvey(code);
-  const { form, handleSubmit, isPending } = useUpdateSurveyController();
+  const { form, handleSubmit, isPending } = useUpdateSurveyController({ code });
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default" className="flex items-center cursor-pointer">
+        <Button variant={"ghost"} className="cursor-pointer w-full">
           Atualizar
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Atualizar pesquisa</DialogTitle>
-          <DialogDescription>
-          </DialogDescription>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={handleSubmit} className="flex flex-col gap-12">
@@ -61,7 +73,7 @@ export function UpdateSurveyDialog({ code }: { code: string }) {
                   <FormItem>
                     <FormLabel>Nota 2</FormLabel>
                     <FormControl>
-                      <Input  {...field} value={survey?.noteTwo} />
+                      <Input {...field} value={survey?.noteTwo} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -79,5 +91,5 @@ export function UpdateSurveyDialog({ code }: { code: string }) {
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
