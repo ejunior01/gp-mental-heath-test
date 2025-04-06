@@ -1,3 +1,4 @@
+import { remove } from "@/app/services/surveysService/remove";
 import { create } from "./create";
 import { get } from "./get";
 import { getAll } from "./get-all";
@@ -8,4 +9,5 @@ export const surveyService = {
   create,
   get,
   update,
+  remove
 };
