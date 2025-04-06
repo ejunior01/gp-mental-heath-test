@@ -1,3 +1,4 @@
+import { useCloseModal } from "@/hooks/useCloseModal";
 import { Spinner } from "@/view/components/Spinner";
 import { Button } from "@/view/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/view/components/ui/dialog";
@@ -6,13 +7,13 @@ import { Input } from "@/view/components/ui/input";
 import { useRegisterSurveyController } from "@/view/pages/Survey/Actions/RegisterSurvey/useRegisterSurveyController";
 import { Plus } from "lucide-react";
 
-
 export function RegisterSurveyDialog() {
 
-  const { form, handleSubmit, isPending } = useRegisterSurveyController();
+  const { form, handleSubmit, isPending, isSuccess } = useRegisterSurveyController();
+  const { modalOpen, setModalOpen } = useCloseModal(isSuccess)
 
   return (
-    <Dialog>
+    <Dialog open={modalOpen} onOpenChange={setModalOpen} >
       <DialogTrigger asChild>
         <Button variant="default" className="flex items-center cursor-pointer">
           <Plus className="h-4 w-4" />
@@ -35,7 +36,7 @@ export function RegisterSurveyDialog() {
                   <FormItem>
                     <FormLabel>Código da pesquisa</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} placeholder="ex. GPTW#000" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,5 +1,5 @@
 import { Survey } from "@/app/entities/survey";
-import { SurveyActionsDropdown } from "@/view/pages/Survey/Actions/survey-actions-dropdown";
+import { SurveyActions } from "@/view/pages/Survey/Actions/survey-actions";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const surveysColumnsSchema: ColumnDef<Survey>[] = [
@@ -25,13 +25,16 @@ export const surveysColumnsSchema: ColumnDef<Survey>[] = [
     header: "Data de criação",
   },
   {
-    accessorKey: "uptadedAt",
+    accessorKey: "updatedAt",
     header: "Última atualizado",
   },
   {
     id: "actions",
+    header: () => {
+      return <div className="text-center w-full" >Ações</div>
+    },
     cell: ({ row }) => {
-      return <SurveyActionsDropdown code={row.original.code} />
+      return <SurveyActions code={row.original.code} />
     },
   },
 ];

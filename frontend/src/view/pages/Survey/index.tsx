@@ -12,6 +12,45 @@ import { RegisterSurveyDialog } from "./Actions/RegisterSurvey/register-survey-d
 import { surveysColumnsSchema } from "./survey-columns-schema";
 import SurveyDataTableFilter from "./survey-data-table-filter";
 
+// const allSurveysData: { pages: number, total: number, data: Survey[] } = {
+//   pages: 1,
+//   total: 2,
+//   data: [
+//     {
+//       code: "GPTW#000",
+//       noteOne: 1,
+//       noteTwo: 2,
+//       result: 2,
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     },
+//     {
+//       code: "GPTW#000",
+//       noteOne: 1,
+//       noteTwo: 2,
+//       result: 2,
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     },
+//     {
+//       code: "GPTW#000",
+//       noteOne: 1,
+//       noteTwo: 2,
+//       result: 2,
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     },
+//     {
+//       code: "GPTW#000",
+//       noteOne: 1,
+//       noteTwo: 2,
+//       result: 2,
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     }
+//   ]
+// }
+
 export function SurveyPage() {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -27,6 +66,7 @@ export function SurveyPage() {
   });
 
   const columns = useMemo(() => surveysColumnsSchema, []);
+
   const { data = [], pages = 0, total = 0 } = allSurveysData || {};
 
   const table = useTable({
