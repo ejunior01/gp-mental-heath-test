@@ -13,21 +13,24 @@ enum Status {
   FAILURE
 }
 
-model SurveyReport {
+model SurveyUpload {
   id             Int       @id @default(autoincrement())
   totalRecords   Int?      @map("total_records")
   status         Status    @default(IN_PROCESS)
   filepath       String
   filepathResult String?   @map("filepath_result")
   createdAt      DateTime  @default(now()) @map("created_at")
-  uptadedAt      DateTime? @map("uptaded_at")
+  updatedAt      DateTime? @map("updated_at")
+  surveys        Survey[]
 }
 
 model Survey {
-  code      String    @id
-  noteOne   Int       @map("note_one")
-  noteTwo   Int       @map("note_two")
-  result    Decimal
-  createdAt DateTime  @default(now()) @map("created_at")
-  uptadedAt DateTime? @default(now()) @map("uptaded_at")
+  code           String        @id
+  noteOne        Int           @map("note_one")
+  noteTwo        Int           @map("note_two")
+  result         Decimal
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime?     @map("updated_at")
+  surveyUploadId Int?
+  surveyUpload   SurveyUpload? @relation(fields: [surveyUploadId], references: [id])
 }
