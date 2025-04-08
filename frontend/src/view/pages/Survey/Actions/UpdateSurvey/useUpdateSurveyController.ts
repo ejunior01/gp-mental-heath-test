@@ -9,8 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const schema = z.object({
   code: z.string({ message: "O campo 'Código da pesquisa' é obrigatório" }),
-  noteOne: z.number({ message: "O campo 'Nota 1' é obrigatório" }),
-  noteTwo: z.number({ message: "O campo 'Nota 2' é obrigatório" }),
+  noteOne: z.coerce.number({ message: "O campo 'Nota 1' é obrigatório" }),
+  noteTwo: z.coerce.number({ message: "O campo 'Nota 2' é obrigatório" }),
 });
 
 type FormData = z.infer<typeof schema>;
