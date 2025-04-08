@@ -4,15 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Survey } from '@prisma/client';
-import { PrismaService } from 'src/shared/prisma/prisma.service';
-import { PaginationResponseDto } from './dto/PaginationResponseDto';
 import { CreateSurveyDto } from './dto/create-survey.dto';
+import { PaginationResponseDto } from 'src/shared/dto/pagination-response-dto';
+import { PrismaService } from 'src/shared/prisma/prisma.service';
+import { Survey } from '@prisma/client';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 
 @Injectable()
 export class SurveyService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createSurveyDto: CreateSurveyDto) {
     const existSurvey = await this.prismaService.survey.findUnique({
@@ -43,16 +43,6 @@ export class SurveyService {
     };
   }
 
-  async uploadSurveyReport(file: Express.Multer.File) {
-    await this.prismaService.surveyReport.create({
-      data: {
-        filepath: file.path,
-      },
-    });
-
-    return { message: 'Arquivo carregado com sucesso', filePath: file.path };
-  }
-
   async findAll(
     page: number = 1,
     size: number = 8,
@@ -64,20 +54,19 @@ export class SurveyService {
       take: size,
     });
 
-    const pages = Math.ceil(total / size);
+    return new PaginationResponseDto<Survey>(page, size, total, data);
+  }
 
-    const prevPage = page < 1 ? 1 : page - 1;
-    const nextPage = page > pages ? pages : page + 1;
+  async findOne(code: string) {
+    const existsSurvey = await this.prismaService.survey.findUnique({
+      where: { code },
+    });
 
-    return {
-      data,
-      page,
-      pages,
-      total,
-      size,
-      prevPage,
-      nextPage,
-    };
+    if (existsSurvey == null) {
+      throw new NotFoundException('Código de pesquisa não localizado');
+    }
+
+    return existsSurvey;
   }
 
   async update(code: string, updateSurveyDto: UpdateSurveyDto) {
@@ -114,7 +103,7 @@ export class SurveyService {
         noteOne: updateSurveyDto.noteOne,
         noteTwo: updateSurveyDto.noteTwo,
         result: resultNote,
-        uptadedAt: new Date()
+        updatedAt: new Date(),
       },
       select: {
         code: true,
@@ -124,7 +113,7 @@ export class SurveyService {
       },
     });
 
-    return updateSurveyDto;
+    return survey;
   }
 
   async remove(code: string) {
