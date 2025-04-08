@@ -1,6 +1,6 @@
+import { ColumnDef } from "@tanstack/react-table";
 import { Survey } from "@/app/entities/survey";
 import { SurveyActions } from "@/view/pages/Survey/Actions/survey-actions";
-import { ColumnDef } from "@tanstack/react-table";
 
 export const surveysColumnsSchema: ColumnDef<Survey>[] = [
   {
@@ -31,10 +31,10 @@ export const surveysColumnsSchema: ColumnDef<Survey>[] = [
   {
     id: "actions",
     header: () => {
-      return <div className="text-center w-full" >Ações</div>
+      return <div className="text-center w-full">Ações</div>;
     },
     cell: ({ row }) => {
-      return <SurveyActions code={row.original.code} />
+      return <SurveyActions code={row.original.code} />;
     },
   },
 ];
