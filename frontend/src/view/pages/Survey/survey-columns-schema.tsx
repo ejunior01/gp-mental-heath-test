@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Survey } from "@/app/entities/survey";
 import { SurveyActions } from "@/view/pages/Survey/Actions/survey-actions";
+import { formatDate } from "@/lib/dayjs-config";
 
 export const surveysColumnsSchema: ColumnDef<Survey>[] = [
   {
@@ -23,10 +24,16 @@ export const surveysColumnsSchema: ColumnDef<Survey>[] = [
   {
     accessorKey: "createdAt",
     header: "Data de criação",
+    cell: ({ row }) => {
+      return <div>{formatDate(row.original.createdAt)}</div>;
+    },
   },
   {
     accessorKey: "updatedAt",
     header: "Última atualizado",
+    cell: ({ row }) => {
+      return <div>{formatDate(row.original.updatedAt)}</div>;
+    },
   },
   {
     id: "actions",
