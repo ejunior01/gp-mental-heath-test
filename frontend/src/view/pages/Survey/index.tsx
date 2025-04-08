@@ -5,56 +5,17 @@ import {
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 
-import { useSurveys } from "@/app/hooks/use-surveys";
-import { useTable } from "@/app/hooks/use-table";
 import { DataTableContainer } from "@/view/components/data-table/data-table-container";
 import { RegisterSurveyDialog } from "./Actions/RegisterSurvey/register-survey-dialog";
-import { surveysColumnsSchema } from "./survey-columns-schema";
 import SurveyDataTableFilter from "./survey-data-table-filter";
-
-// const allSurveysData: { pages: number, total: number, data: Survey[] } = {
-//   pages: 1,
-//   total: 2,
-//   data: [
-//     {
-//       code: "GPTW#000",
-//       noteOne: 1,
-//       noteTwo: 2,
-//       result: 2,
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     },
-//     {
-//       code: "GPTW#000",
-//       noteOne: 1,
-//       noteTwo: 2,
-//       result: 2,
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     },
-//     {
-//       code: "GPTW#000",
-//       noteOne: 1,
-//       noteTwo: 2,
-//       result: 2,
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     },
-//     {
-//       code: "GPTW#000",
-//       noteOne: 1,
-//       noteTwo: 2,
-//       result: 2,
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     }
-//   ]
-// }
+import { surveysColumnsSchema } from "./survey-columns-schema";
+import { useSurveys } from "@/app/hooks/use-surveys";
+import { useTable } from "@/app/hooks/use-table";
 
 export function SurveyPage() {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 8,
+    pageSize: 5,
   });
 
   const [sorting, setSorting] = useState<SortingState>([]);
