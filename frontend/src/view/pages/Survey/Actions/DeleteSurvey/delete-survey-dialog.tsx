@@ -13,14 +13,14 @@ import { Trash } from "lucide-react";
 import { useState } from "react";
 
 export function DeleteSurveyDialog({ code }: { code: string }) {
-  const [modalClose, setModalClose] = useState(false)
+  const [modalClose, setModalClose] = useState(false);
 
   const handleModalCLose = () => {
-    setModalClose(true)
-  }
+    setModalClose(false);
+  };
 
   return (
-    <Dialog open={modalClose} onOpenChange={setModalClose} >
+    <Dialog open={modalClose} onOpenChange={setModalClose}>
       <DialogTrigger asChild>
         <Button variant={"ghost"} className="cursor-pointer">
           <Trash className="w-4 h-4 text-primary" />

@@ -16,7 +16,7 @@ export function UpdateSurveyDialog({ code }: { code: string }) {
   const [modalClose, setModalClose] = useState(false);
 
   const handleModalCLose = () => {
-    setModalClose(true);
+    setModalClose(false);
   };
 
   return (
