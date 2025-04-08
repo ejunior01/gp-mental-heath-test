@@ -1,13 +1,13 @@
 import { Input } from "@/view/components/ui/input";
 import { Table } from "@tanstack/react-table";
 
-interface TicketDataTableFilterProps<TData> {
+interface SurveyDataTableFilterProps<TData> {
   table: Table<TData>;
 }
 
 export default function SurveyDataTableFilter<TData>({
   table,
-}: TicketDataTableFilterProps<TData>) {
+}: SurveyDataTableFilterProps<TData>) {
   const codeColumn = table.getColumn("code");
 
   return (
@@ -16,9 +16,7 @@ export default function SurveyDataTableFilter<TData>({
         <Input
           placeholder="Buscar pesquisa pelo código"
           value={(codeColumn.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            codeColumn.setFilterValue(event.target.value)
-          }
+          onChange={(event) => codeColumn.setFilterValue(event.target.value)}
           type="search"
           className="bg-muted border-none min-w-60 max-w-sm"
         />
