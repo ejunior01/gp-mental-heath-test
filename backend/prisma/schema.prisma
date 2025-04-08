@@ -20,7 +20,7 @@ model SurveyUpload {
   filepath       String
   filepathResult String?   @map("filepath_result")
   createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime? @map("updated_at")
+  updatedAt      DateTime? @default(now()) @map("updated_at")
   surveys        Survey[]
 }
 
@@ -30,7 +30,7 @@ model Survey {
   noteTwo        Int           @map("note_two")
   result         Decimal
   createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime?     @map("updated_at")
+  updatedAt      DateTime?     @default(now()) @map("updated_at")
   surveyUploadId Int?
   surveyUpload   SurveyUpload? @relation(fields: [surveyUploadId], references: [id])
 }
