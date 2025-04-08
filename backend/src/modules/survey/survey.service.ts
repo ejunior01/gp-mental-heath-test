@@ -3,11 +3,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma, Survey } from '@prisma/client';
 
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { PaginationResponseDto } from 'src/shared/dto/pagination-response-dto';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
-import { Survey } from '@prisma/client';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 
 @Injectable()
@@ -48,20 +48,19 @@ export class SurveyService {
     page: number = 1,
     size: number = 5,
   ): Promise<PaginationResponseDto<Survey>> {
-    const total = await this.prismaService.survey.count({
-      where: {
-        code: {
-          contains: code,
-        },
+    const filtering: Prisma.SurveyWhereInput = {
+      code: {
+        contains: code,
+        mode: 'insensitive',
       },
+    };
+
+    const total = await this.prismaService.survey.count({
+      where: filtering,
     });
 
     const data = await this.prismaService.survey.findMany({
-      where: {
-        code: {
-          contains: code,
-        },
-      },
+      where: filtering,
       skip: (page - 1) * size,
       take: size,
     });
