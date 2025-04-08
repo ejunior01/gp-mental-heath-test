@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MulterconfigService } from './multerconfig.service';
+import { MulterconfigService } from './multer-config.service';
 
 @Module({
   imports: [],
