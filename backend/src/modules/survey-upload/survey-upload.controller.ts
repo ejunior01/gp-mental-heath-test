@@ -11,7 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { SurveyUploadService } from './survey-upload.service';
 
 // Tamanho máximo de 500Mb para upload de arquivos
@@ -22,6 +22,8 @@ export class SurveyUploadController {
   constructor(private readonly surveyUploadService: SurveyUploadService) {}
 
   @Get()
+  @ApiQuery({ name: 'page', required: false, type: 'number', default: 1 })
+  @ApiQuery({ name: 'size', required: false, type: 'number', default: 8 })
   findAll(@Query('page') page: number = 1, @Query('size') size: number = 8) {
     return this.surveyUploadService.findAll(Number(page), Number(size));
   }
@@ -31,7 +33,7 @@ export class SurveyUploadController {
     return this.surveyUploadService.findOne(+id);
   }
 
-  @Post('/upload')
+  @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
