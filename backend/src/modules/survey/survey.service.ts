@@ -50,7 +50,7 @@ export class SurveyService {
     const total = await this.prismaService.survey.count();
 
     const data = await this.prismaService.survey.findMany({
-      skip: page - 1,
+      skip: (page - 1) * size,
       take: size,
     });
 
