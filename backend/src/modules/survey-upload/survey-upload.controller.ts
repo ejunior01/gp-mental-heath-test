@@ -6,6 +6,7 @@ import {
   Param,
   ParseFilePipe,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -21,23 +22,8 @@ export class SurveyUploadController {
   constructor(private readonly surveyUploadService: SurveyUploadService) {}
 
   @Get()
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        page: {
-          type: 'number',
-          format: 'number',
-        },
-        size: {
-          type: 'number',
-          format: 'number',
-        },
-      },
-    },
-  })
-  findAll() {
-    return this.surveyUploadService.findAll();
+  findAll(@Query('page') page: number = 1, @Query('size') size: number = 8) {
+    return this.surveyUploadService.findAll(Number(page), Number(size));
   }
 
   @Get(':id')
