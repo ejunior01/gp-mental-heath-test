@@ -15,25 +15,24 @@ import {
   FormMessage,
 } from "@/view/components/ui/form";
 
-import { useSurvey } from "@/app/hooks/use-survey";
-import { useCloseModal } from "@/hooks/useCloseModal";
-import { Spinner } from "@/view/components/Spinner";
 import { Button } from "@/view/components/ui/button";
 import { Input } from "@/view/components/ui/input";
-import { Skeleton } from "@/view/components/ui/skeleton";
-import { useUpdateSurveyController } from "@/view/pages/Survey/Actions/UpdateSurvey/useUpdateSurveyController";
 import { Pen } from "lucide-react";
+import { Skeleton } from "@/view/components/ui/skeleton";
+import { Spinner } from "@/view/components/Spinner";
+import { useCloseModal } from "@/hooks/useCloseModal";
+import { useSurvey } from "@/app/hooks/use-survey";
+import { useUpdateSurveyController } from "@/view/pages/Survey/Actions/UpdateSurvey/useUpdateSurveyController";
 
 export function UpdateSurveyDialog({ code }: { code: string }) {
-
   const { survey, isLoading } = useSurvey(code);
 
-  const { form, handleSubmit, isPending, isSuccess } = useUpdateSurveyController({ code });
-  const { modalOpen, setModalOpen } = useCloseModal(isSuccess)
-
+  const { form, handleSubmit, isPending, isSuccess } =
+    useUpdateSurveyController({ code });
+  const { modalOpen, setModalOpen } = useCloseModal(isSuccess);
 
   return (
-    <Dialog open={modalOpen} onOpenChange={setModalOpen} >
+    <Dialog open={modalOpen} onOpenChange={setModalOpen}>
       <DialogTrigger asChild>
         <Button variant={"ghost"} className="cursor-pointer">
           <Pen className="w-4 h-4 text-primary" />
@@ -46,7 +45,7 @@ export function UpdateSurveyDialog({ code }: { code: string }) {
         </DialogHeader>
 
         {isLoading && <Skeleton className="w-full h-2" />}
-        {!isLoading &&
+        {!isLoading && (
           <Form {...form}>
             <form onSubmit={handleSubmit} className="flex flex-col gap-12">
               <div className="flex flex-col gap-2">
@@ -99,7 +98,7 @@ export function UpdateSurveyDialog({ code }: { code: string }) {
               </Button>
             </form>
           </Form>
-        }
+        )}
       </DialogContent>
     </Dialog>
   );
