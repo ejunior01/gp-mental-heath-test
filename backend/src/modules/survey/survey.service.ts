@@ -8,6 +8,7 @@ import { Prisma, Survey } from '@prisma/client';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { PaginationResponseDto } from 'src/shared/dto/pagination-response-dto';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
+import { SurveyEntity } from './entities/survey-entity';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 
 @Injectable()
@@ -27,14 +28,19 @@ export class SurveyService {
     if (existSurvey) {
       throw new ConflictException('Código de pesquisa já consta cadastrado');
     }
-    const resultNote = (createSurveyDto.noteOne + createSurveyDto.noteTwo) / 2;
+
+    const surveyEntity = new SurveyEntity(
+      createSurveyDto.code,
+      createSurveyDto.noteOne,
+      createSurveyDto.noteTwo,
+    );
 
     await this.prismaService.survey.create({
       data: {
-        code: createSurveyDto.code,
-        noteOne: createSurveyDto.noteOne,
-        noteTwo: createSurveyDto.noteTwo,
-        result: resultNote,
+        code: surveyEntity.code,
+        noteOne: surveyEntity.noteOne,
+        noteTwo: surveyEntity.noteTwo,
+        result: surveyEntity.result,
       },
     });
 
@@ -103,18 +109,22 @@ export class SurveyService {
       }
     }
 
-    const resultNote = (updateSurveyDto.noteOne + updateSurveyDto.noteTwo) / 2;
+    const surveyEntity = new SurveyEntity(
+      updateSurveyDto.code,
+      updateSurveyDto.noteOne,
+      updateSurveyDto.noteTwo,
+    );
 
     const survey = await this.prismaService.survey.update({
       where: {
         code: code,
       },
       data: {
-        code: updateSurveyDto.code,
-        noteOne: updateSurveyDto.noteOne,
-        noteTwo: updateSurveyDto.noteTwo,
-        result: resultNote,
-        updatedAt: new Date(),
+        code: surveyEntity.code,
+        noteOne: surveyEntity.noteOne,
+        noteTwo: surveyEntity.noteTwo,
+        result: surveyEntity.result,
+        updatedAt: surveyEntity.updatedAt,
       },
       select: {
         code: true,
