@@ -8,6 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiQuery } from '@nestjs/swagger';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 import { SurveyService } from './survey.service';
@@ -22,8 +23,15 @@ export class SurveyController {
   }
 
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('size') size: number = 8) {
-    return this.surveyService.findAll(Number(page), Number(size));
+  @ApiQuery({ name: 'code', required: false, type: 'string' })
+  @ApiQuery({ name: 'page', required: false, type: 'number', default: 1 })
+  @ApiQuery({ name: 'size', required: false, type: 'number', default: 5 })
+  findAll(
+    @Query('code') code?: string,
+    @Query('page') page: number = 1,
+    @Query('size') size: number = 5,
+  ) {
+    return this.surveyService.findAll(code, Number(page), Number(size));
   }
 
   @Get(':code')

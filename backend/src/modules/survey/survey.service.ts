@@ -44,12 +44,24 @@ export class SurveyService {
   }
 
   async findAll(
+    code?: string,
     page: number = 1,
-    size: number = 8,
+    size: number = 5,
   ): Promise<PaginationResponseDto<Survey>> {
-    const total = await this.prismaService.survey.count();
+    const total = await this.prismaService.survey.count({
+      where: {
+        code: {
+          contains: code,
+        },
+      },
+    });
 
     const data = await this.prismaService.survey.findMany({
+      where: {
+        code: {
+          contains: code,
+        },
+      },
       skip: (page - 1) * size,
       take: size,
     });
