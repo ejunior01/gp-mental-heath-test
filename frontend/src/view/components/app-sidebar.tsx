@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { FileUp, ListTodo } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -9,7 +10,6 @@ import {
   SidebarMenuItem,
 } from "@/view/components/ui/sidebar";
 
-import { ListTodo } from "lucide-react";
 import { NavMain } from "@/view/components/nav-main";
 
 const data = {
@@ -18,6 +18,11 @@ const data = {
       title: "Pesquisas",
       url: "/",
       icon: ListTodo,
+    },
+    {
+      title: "Upload de pesquisas",
+      url: "/upload-surveys",
+      icon: FileUp,
     },
   ],
 };
