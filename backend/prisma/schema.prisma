@@ -19,6 +19,7 @@ model SurveyUpload {
   status         Status    @default(IN_PROCESS)
   filepath       String
   filepathResult String?   @map("filepath_result")
+  message        String?
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime? @default(now()) @map("updated_at")
   surveys        Survey[]
