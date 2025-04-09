@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Status, SurveyUpload } from '@prisma/client';
 
 import { PaginationResponseDto } from 'src/shared/dto/pagination-response-dto';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
-import { SurveyUpload } from '@prisma/client';
+import { SurveyUploadResults } from './dto/survey-upload-results.dto';
 
 @Injectable()
 export class SurveyUploadService {
@@ -46,5 +47,62 @@ export class SurveyUploadService {
     });
 
     return { message: 'Arquivo carregado com sucesso', filePath: file.path };
+  }
+
+  async uploadFileResults(
+    id: number,
+    surveyUploadResults: SurveyUploadResults,
+  ) {
+    const existsSurveyUpload = await this.prismaService.surveyUpload.findUnique(
+      {
+        where: { id },
+      },
+    );
+
+    if (existsSurveyUpload == null) {
+      throw new NotFoundException('Id não localizado');
+    }
+
+    if (surveyUploadResults.status === Status.FAILURE) {
+      await this.prismaService.surveyUpload.update({
+        where: { id },
+        data: {
+          status: Status.FAILURE,
+          message: surveyUploadResults.message,
+          updatedAt: new Date(),
+        },
+      });
+
+      return {
+        id: id,
+        message: `Registro do id: ${id} atualizado.`,
+      };
+    }
+    const surveyResults = surveyUploadResults.surveys.map((e) => ({
+      ...e,
+      surveyUploadId: id,
+    }));
+
+    await this.prismaService.survey.createMany({
+      data: surveyResults,
+      skipDuplicates: true,
+    });
+
+    await this.prismaService.surveyUpload.update({
+      where: { id },
+      data: {
+        filepathResult: surveyUploadResults.filepathResult,
+        totalRecords: surveyUploadResults.surveys.length,
+        status: Status.COMPLETED,
+        message: surveyUploadResults.message,
+        updatedAt: new Date(),
+      },
+    });
+
+    return {
+      id: id,
+      totalRecords: surveyUploadResults.surveys.length,
+      message: 'Pesquisas registradas com sucesso',
+    };
   }
 }

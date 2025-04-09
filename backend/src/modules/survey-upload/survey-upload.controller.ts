@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   FileTypeValidator,
   Get,
@@ -12,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import { SurveyUploadResults } from './dto/survey-upload-results.dto';
 import { SurveyUploadService } from './survey-upload.service';
 
 // Tamanho máximo de 500Mb para upload de arquivos
@@ -31,6 +33,14 @@ export class SurveyUploadController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.surveyUploadService.findOne(+id);
+  }
+
+  @Post(':id/results')
+  uploadFileResults(
+    @Param('id') id: string,
+    @Body() surveyUploadResults: SurveyUploadResults,
+  ) {
+    return this.surveyUploadService.uploadFileResults(+id, surveyUploadResults);
   }
 
   @Post()
