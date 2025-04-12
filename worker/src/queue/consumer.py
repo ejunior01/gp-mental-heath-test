@@ -3,15 +3,16 @@ from typing import Callable
 import pika
 from log import logger
 from pika import BlockingConnection
+from settings import settings
 
 
 class SurveyRabbitmqConsumer:
     def __init__(self, callback: Callable):
-        self.__host: str = "localhost"
-        self.__port: int = 5672
-        self.__username: str = "rabbitmq"
-        self.__password: str = "rabbitmq"
-        self.__queue: str = "survey_upload_queue"
+        self.__host: str = settings.Rabbitmq.host
+        self.__port: int = settings.Rabbitmq.port
+        self.__username: str = settings.Rabbitmq.username
+        self.__password: str = settings.Rabbitmq.password
+        self.__queue: str = settings.Rabbitmq.queue
         self.__callback: Callable = callback
 
     def __open_connection(self):
