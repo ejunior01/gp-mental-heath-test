@@ -1,0 +1,130 @@
+services:
+  survey_frontend:
+    container_name: survey_frontend
+    build: ../frontend
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    environment:
+      - PORT=${FRONTEND_PORT}
+      - VITE_API_URL=survey_backend
+    depends_on:
+      survey_backend:
+        condition: service_healthy
+    networks:
+      - survey-network
+    restart: unless-stopped
+    mem_limit: ${FRONTEND_MEM_LIMIT}
+    cpus: ${FRONTEND_CPUS}
+    labels:
+      - "com.docker.compose.project=survey"
+      - "com.docker.compose.service=frontend"
+
+  survey_backend:
+    container_name: survey_backend
+    build: ../backend
+    volumes:
+      - shared-storage:/usr/src/app
+    ports:
+      - "${BACKEND_PORT}:3001"
+    env_file:
+      - ../backend/.env
+    depends_on:
+      survey_database:
+        condition: service_healthy
+      survey-queue:
+        condition: service_healthy
+    networks:
+      - survey-network
+    restart: unless-stopped
+    mem_limit: ${BACKEND_MEM_LIMIT}
+    cpus: ${BACKEND_CPUS}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "com.docker.compose.project=survey"
+      - "com.docker.compose.service=backend"
+
+  survey_worker:
+    container_name: survey_worker
+    build: ../worker
+    volumes:
+      - shared-storage:/usr/src/app
+    environment:
+      - RABBITMQ_USERNAME=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_HOST=survey_queue
+      - RABBITMQ_QUEUE=serive_survey_queue
+    depends_on:
+      survey-queue:
+        condition: service_healthy
+    networks:
+      - survey-network
+    restart: unless-stopped
+    mem_limit: ${WORKER_MEM_LIMIT}
+    cpus: ${WORKER_CPUS}
+    labels:
+      - "com.docker.compose.project=survey"
+      - "com.docker.compose.service=worker"
+
+  survey_database:
+    image: postgres:17.4-bookworm
+    container_name: survey_database
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - survey-network
+    restart: unless-stopped
+    mem_limit: ${DATABASE_MEM_LIMIT}
+    cpus: ${DATABASE_CPUS}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -h survey_database"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    labels:
+      - "com.docker.compose.project=survey"
+      - "com.docker.compose.service=database"
+
+  survey-queue:
+    image: "rabbitmq:3-management"
+    container_name: "survey_queue"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_DEFAULT_VHOST}
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - survey-network
+    restart: unless-stopped
+    mem_limit: ${RABBITMQ_MEM_LIMIT}
+    cpus: ${RABBITMQ_CPUS}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "com.docker.compose.project=survey"
+      - "com.docker.compose.service=queue"
+
+volumes:
+  pg-data:
+    driver: local
+  shared-storage:
+    driver: local
+
+networks:
+  survey-network:
+    driver: bridge
