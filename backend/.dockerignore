@@ -8,8 +8,7 @@ dist
 node_modules
 coverage
 
-# Environment (contains sensitive data)
-.env
+.env.*
 
 # Files not required for production
 .editorconfig
