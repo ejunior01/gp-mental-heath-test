@@ -1,33 +1,38 @@
 services:
   survey_frontend:
-    container_name: survey_frontend
-    build: ../frontend
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     ports:
-      - "${FRONTEND_PORT}:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     environment:
-      - PORT=${FRONTEND_PORT}
-      - VITE_API_URL=survey_backend
+      VITE_API_URL: "http://survey_backend:3001"
     depends_on:
       survey_backend:
         condition: service_healthy
     networks:
       - survey-network
     restart: unless-stopped
-    mem_limit: ${FRONTEND_MEM_LIMIT}
-    cpus: ${FRONTEND_CPUS}
-    labels:
-      - "com.docker.compose.project=survey"
-      - "com.docker.compose.service=frontend"
+    mem_limit: ${FRONTEND_MEM_LIMIT:-512m}
+    mem_reservation: ${FRONTEND_MEM_RESERVATION:-256m}
+    cpus: ${FRONTEND_CPUS:-0.5}
+    deploy:
+      resources:
+        limits:
+          cpus: "${FRONTEND_CPUS:-0.5}"
+          memory: "${FRONTEND_MEM_LIMIT:-512m}"
+      update_config:
+        order: start-first
+    read_only: true
 
   survey_backend:
-    container_name: survey_backend
-    build: ../backend
-    volumes:
-      - shared-storage:/usr/src/app
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
     ports:
-      - "${BACKEND_PORT}:3001"
-    env_file:
-      - ../backend/.env
+      - "${BACKEND_PORT:-3001}:3001"
+    environment:
+      DATABASE_URL: "${DATABASE_URL}"
     depends_on:
       survey_database:
         condition: service_healthy
@@ -35,94 +40,107 @@ services:
         condition: service_healthy
     networks:
       - survey-network
+    volumes:
+      - survey-storage:/usr/src/app
     restart: unless-stopped
-    mem_limit: ${BACKEND_MEM_LIMIT}
-    cpus: ${BACKEND_CPUS}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    labels:
-      - "com.docker.compose.project=survey"
-      - "com.docker.compose.service=backend"
+    mem_limit: ${BACKEND_MEM_LIMIT:-1g}
+    mem_reservation: ${BACKEND_MEM_RESERVATION:-512m}
+    cpus: ${BACKEND_CPUS:-1.0}
+    deploy:
+      resources:
+        limits:
+          cpus: "${BACKEND_CPUS:-1.0}"
+          memory: "${BACKEND_MEM_LIMIT:-1g}"
+      update_config:
+        order: start-first
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
 
   survey_worker:
-    container_name: survey_worker
-    build: ../worker
-    volumes:
-      - shared-storage:/usr/src/app
+    build:
+      context: ../worker
+      dockerfile: Dockerfile
     environment:
-      - RABBITMQ_USERNAME=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_DEFAULT_PASS}
-      - RABBITMQ_HOST=survey_queue
-      - RABBITMQ_QUEUE=serive_survey_queue
+      RABBITMQ_USERNAME: "${RABBITMQ_USERNAME:-guest}"
+      RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD:-guest}"
+      RABBITMQ_QUEUE: "survey_upload_queue"
+      RABBITMQ_PORT: "${RABBITMQ_PORT:-5672}"
+      RABBITMQ_HOST: "survey_queue"
     depends_on:
       survey-queue:
         condition: service_healthy
     networks:
       - survey-network
+    volumes:
+      - survey-storage:/usr/src/app
     restart: unless-stopped
-    mem_limit: ${WORKER_MEM_LIMIT}
-    cpus: ${WORKER_CPUS}
-    labels:
-      - "com.docker.compose.project=survey"
-      - "com.docker.compose.service=worker"
+    mem_limit: ${WORKER_MEM_LIMIT:-512m}
+    mem_reservation: ${WORKER_MEM_RESERVATION:-256m}
+    cpus: ${WORKER_CPUS:-0.5}
+    deploy:
+      resources:
+        limits:
+          cpus: "${WORKER_CPUS:-0.5}"
+          memory: "${WORKER_MEM_LIMIT:-512m}"
+      update_config:
+        order: start-first
 
   survey_database:
-    image: postgres:17.4-bookworm
-    container_name: survey_database
+    image: postgres:16-alpine
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-example}"
+      POSTGRES_DB: "${POSTGRES_DB:-survey}"
     volumes:
       - pg-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     networks:
       - survey-network
     restart: unless-stopped
-    mem_limit: ${DATABASE_MEM_LIMIT}
-    cpus: ${DATABASE_CPUS}
+    mem_limit: ${DATABASE_MEM_LIMIT:-1g}
+    mem_reservation: ${DATABASE_MEM_RESERVATION:-512m}
+    cpus: ${DATABASE_CPUS:-1.0}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -h survey_database"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -h localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
-    labels:
-      - "com.docker.compose.project=survey"
-      - "com.docker.compose.service=database"
+    deploy:
+      resources:
+        limits:
+          cpus: "${DATABASE_CPUS:-1.0}"
+          memory: "${DATABASE_MEM_LIMIT:-1g}"
 
   survey-queue:
-    image: "rabbitmq:3-management"
-    container_name: "survey_queue"
+    image: rabbitmq:3-management-alpine
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_DEFAULT_VHOST}
-    ports:
-      - "15672:15672"
-      - "5672:5672"
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USERNAME:-guest}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASSWORD:-guest}"
+      RABBITMQ_DEFAULT_VHOST: "/"
     networks:
       - survey-network
     restart: unless-stopped
-    mem_limit: ${RABBITMQ_MEM_LIMIT}
-    cpus: ${RABBITMQ_CPUS}
+    mem_limit: ${RABBITMQ_MEM_LIMIT:-512m}
+    mem_reservation: ${RABBITMQ_MEM_RESERVATION:-256m}
+    cpus: ${RABBITMQ_CPUS:-0.5}
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 30s
-      timeout: 10s
+      timeout: 5s
       retries: 3
-    labels:
-      - "com.docker.compose.project=survey"
-      - "com.docker.compose.service=queue"
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "${RABBITMQ_CPUS:-0.5}"
+          memory: "${RABBITMQ_MEM_LIMIT:-512m}"
 
 volumes:
   pg-data:
     driver: local
-  shared-storage:
+  survey-storage:
     driver: local
 
 networks:

@@ -1,11 +1,25 @@
+FROM python:3.12.8-alpine AS builder
+
+WORKDIR /consumer
+
+COPY requirements.txt .
+
+RUN apk add --no-cache gcc musl-dev && \
+    python -m venv /venv && \
+    /venv/bin/pip install --no-cache-dir -r requirements.txt && \
+    apk del gcc musl-dev
+
+
 FROM python:3.12.8-alpine
 
 WORKDIR /consumer
 
-COPY /src /consumer
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-COPY requirements.txt ./
+COPY --from=builder /venv /venv
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY src/ .
 
-CMD ["python", "./main.py"]
+USER appuser
+
+CMD ["/venv/bin/python", "main.py"]
