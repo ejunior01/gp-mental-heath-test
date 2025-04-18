@@ -63,10 +63,10 @@ services:
       context: ../worker
       dockerfile: Dockerfile
     environment:
-      RABBITMQ_USERNAME: "${RABBITMQ_USERNAME:-guest}"
-      RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD:-guest}"
+      RABBITMQ_USERNAME: "${RABBITMQ_DEFAULT_USER:-guest}"
+      RABBITMQ_PASSWORD: "${RABBITMQ_DEFAULT_PASS:-guest}"
       RABBITMQ_QUEUE: "survey_upload_queue"
-      RABBITMQ_PORT: "${RABBITMQ_PORT:-5672}"
+      RABBITMQ_PORT: "5672"
       RABBITMQ_HOST: "survey_queue"
     depends_on:
       survey-queue:
@@ -116,8 +116,8 @@ services:
   survey-queue:
     image: rabbitmq:3-management-alpine
     environment:
-      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USERNAME:-guest}"
-      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASSWORD:-guest}"
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_DEFAULT_USER:-guest}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_DEFAULT_PASS:-guest}"
       RABBITMQ_DEFAULT_VHOST: "/"
     networks:
       - survey-network
