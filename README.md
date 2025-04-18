@@ -26,7 +26,7 @@ O sistema foi projetado para resolver os seguintes problemas identificados no pr
 - Docker para conteinerização das aplicações.
 - Documentação: Swagger para documentação das APIs.
 
-### 📋 Funcionalidades
+## 📋 Funcionalidades
 
 Backend (Node.js - Nest.js)
 
@@ -49,23 +49,28 @@ Documentação
 - APIs documentadas com Swagger.
 
 📂 Estrutura do Repositório
-├── backend/     # Código do serviço backend (Node.js - Nest.js)
-├── frontend/    # Código do frontend (React.js)
-├── worker/      # Serviço de processamento de dados (Python)
-├── docker/      # Configurações do docker
-└── README.md
 
-⚙️ Como Executar o Projeto
+├── backend/     *# Código do serviço backend (Node.js - Nest.js)*
 
-### Pré-requisitos
+├── frontend/    *# Código do frontend (React.js)*
+
+├── worker/      *# Serviço de processamento de dados (Python)*
+
+├── docker/      *# Configurações do docker*
+
+└── README.md 
+
+
+
+## ⚙️ Clonando e Executando o Código
+
+**Pré-requisitos**
 
 - Node.js (v16 ou superior)
 - Python (v3.12.8 ou superior)
 - PostgreSQL
 - Conta AWS configurada (para S3)
 - Docker Desktop ou Docker engine
-
-### Clonando e Executando o Código
 
 Para clonar e executar o projeto localmente, siga as etapas abaixo:
 
@@ -78,7 +83,7 @@ git clone https://github.com/ejunior01/gptw-mental-health-test.git
 3. Acesse o diretório do projeto:
 `cd gptw-mental-health-test`
 
-4. Configure as variáveis de ambiente no arquivo ==.env== dentro da pasta: ==./docker==. No arquivo ==.env.example== possui as variáveis necessárias para rodar a aplicação.
+4. Configure as variáveis de ambiente no arquivo **.env** dentro da pasta: **./docker**. No arquivo **.env.example** possui os exemplos das variáveis necessárias para rodar a aplicação.
 
 5. Execute o docker compose para criar as imagens da aplicação e subir os container.
 `
