@@ -50,16 +50,14 @@ Documentação
 
 📂 Estrutura do Repositório
 
-├── backend/     *# Código do serviço backend (Node.js - Nest.js)*
+```
 
-├── frontend/    *# Código do frontend (React.js)*
-
-├── worker/      *# Serviço de processamento de dados (Python)*
-
-├── docker/      *# Configurações do docker*
-
+├── backend/     # Código do serviço backend (Node.js - Nest.js)
+├── frontend/    # Código do frontend (React.js)
+├── worker/      # Serviço de processamento de dados (Python)
+├── docker/      # Configurações do docker
 └── README.md 
-
+```
 
 
 ## ⚙️ Clonando e Executando o Código
